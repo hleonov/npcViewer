@@ -1,22 +1,9 @@
-<p>npc-list works!</p>
 <div class="csv-result-table">
-
   <table>
     <thead>
-    <tr>
-      <th>#</th>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Gender</th>
-      <th>Race</th>
-      <th>Nationality</th>
-      <th>Religion</th>
-      <th>Class</th>
-      <th>Looks</th>
-      <th>Role</th>
-      <th>Context</th>
-      <th>Source</th>
-    </tr>
+      <tr>
+        <th *ngFor="let header of headers;"> {{header}}</th>
+      </tr>
     </thead>
     <tbody>
     <tr *ngFor="let csvData of csvRecords;let i = index;">

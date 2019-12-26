@@ -11,6 +11,7 @@ import { CSVRecord } from '../CSVRecord';
 export class NpcListComponent implements OnInit {
 
   csvRecords: any[] = [];
+  headers: any[] = [];
   //  http: HttpClient;
   // GET CSV FILE HEADER COLUMNS
   getHeaderArray(csvRecordsArr: any)
@@ -76,7 +77,7 @@ export class NpcListComponent implements OnInit {
                 console.log("headers: " + headersRow);
                 console.log("no. of items: " + headersRow.length);
                 this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
-              //  this.csvRecords.push(csvData);
+                this.headers = headersRow;
               });
   }
 
