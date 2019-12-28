@@ -16,7 +16,7 @@ export class NpcListComponent implements OnInit {
   public csvRecords: CSVRecord[] = [];
   dataSource;
   headers: any[] = [];
-  columnsToDisplay = ['firstName', 'lastName', 'gender'];
+  columnsToDisplay = ['firstName', 'lastName', 'gender', 'race', 'nationality','class', 'looks', 'role', 'context', 'source'];
   displayedColumns: string[] = ['firstName', 'lastName', 'gender', 'race', 'nationality',
   'class', 'looks', 'role', 'context', 'source'];
   @ViewChild(MatSort, {static: true}) sort: MatSort;
