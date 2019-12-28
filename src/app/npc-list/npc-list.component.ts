@@ -1,17 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CSVRecord } from '../CSVRecord';
-
-
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import {MatSort} from '@angular/material/sort';
+import {Observable, of, from} from "rxjs";
 @Component({
   selector: 'app-npc-list',
   templateUrl: './npc-list.component.html',
   styleUrls: ['./npc-list.component.css']
 })
-export class NpcListComponent implements OnInit {
 
-  csvRecords: any[] = [];
+export class NpcListComponent implements OnInit {
+  //var dataArr: CSVRecord[] = [];
+  private loading: boolean = false;
+  public csvRecords: CSVRecord[] = [];
+  dataSource;
   headers: any[] = [];
+  columnsToDisplay = ['firstName', 'lastName', 'gender'];
+  displayedColumns: string[] = ['firstName', 'lastName', 'gender', 'race', 'nationality',
+  'class', 'looks', 'role', 'context', 'source'];
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   //  http: HttpClient;
   // GET CSV FILE HEADER COLUMNS
   getHeaderArray(csvRecordsArr: any)
@@ -21,7 +29,7 @@ export class NpcListComponent implements OnInit {
 
     for (let j = 0; j < headers.length; j++) {
       // if (headers[j] != "") {
-         headerArray.push(headers[j]);
+      headerArray.push(headers[j]);
       // }
     }
     return headerArray;
@@ -29,14 +37,11 @@ export class NpcListComponent implements OnInit {
 
   getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any)
   {
-    var dataArr = []
-
+    var dataArr: CSVRecord[] = [];
     for (let i = 1; i < csvRecordsArray.length; i++) {
       let data = csvRecordsArray[i].split(',');
-      console.log(data);
       // FOR EACH ROW IN CSV FILE IF THE NUMBER OF COLUMNS
       // ARE SAME AS NUMBER OF HEADER COLUMNS THEN PARSE THE DATA
-
       if (data.length > 1) {//== headerLength) {
         var csvRecord: CSVRecord = new CSVRecord();
         csvRecord.number = data[0].trim();
@@ -58,31 +63,58 @@ export class NpcListComponent implements OnInit {
     return dataArr;
   }
 
-  constructor(private http: HttpClient) {
-  this.loadData(); }
-
-  loadData() {
+  async loadData() {
+    console.log("in loadData");
     //let input = $event.target;
-    // let reader = new FileReader();
-   let inputFile = "assets/fake_NPC_list.csv";
+    let inputFile = "assets/fake_NPC_list.csv";
 
-    // reader.readAsText(inputFile);
-  // this.http.get<File>(inputFile, {responseType: "text"});
+    const csvData = await this.http.get(inputFile, {responseType: 'text'}).toPromise();
 
-    // and then:
-     this.http.get(inputFile, {responseType: 'text'})
-              .subscribe(csvData => {
-                let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
-                let headersRow = this.getHeaderArray(csvRecordsArray);
-                console.log("headers: " + headersRow);
-                console.log("no. of items: " + headersRow.length);
-                this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
-                this.headers = headersRow;
-              });
+    let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+    let headersRow = this.getHeaderArray(csvRecordsArray);
+    console.log("headers: " + headersRow);
+    this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
+    console.log("no. of items: " + this.csvRecords.length);
+    this.headers = headersRow;
+    return from(this.csvRecords);
+    //return this.csvRecords;
+  }
+
+  async setDataSource() {
+    //console.log("in setDataSource: "+this.csvRecords.length);
+    await this.loadData().then(()=> {
+      this.dataSource = new MatTableDataSource<CSVRecord>(this.csvRecords);
+      this.dataSource.sort = this.sort;
+      console.log("+++++++++++++++++++++ finished loadData with: "+this.csvRecords.length)
+    });
+  }
+
+  constructor(private http: HttpClient) {
+    //console.log("in constructor");
+    this.loading = true;
+    this.setDataSource().then(() => {
+      this.loading = false;
+    });
   }
 
   ngOnInit() {
-    this.loadData();
+    //console.log("in ngOnInit");
   }
-
 }
+// loadData() {//: Observable<CSVRecord[]>{
+//   //let input = $event.target;
+//   let inputFile = "assets/fake_NPC_list.csv";
+//   //subscribe to the result of http.get (the entire csv file), process the data
+//   //and in the end assign to a class property to be available to the template
+//   this.http.get(inputFile, {responseType: 'text'})
+//   .subscribe(csvData => {
+//     let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+//     let headersRow = this.getHeaderArray(csvRecordsArray);
+//     console.log("headers: " + headersRow);
+//     this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
+//     console.log("no. of items: " + this.csvRecords.length);
+//     this.headers = headersRow;
+//   });
+//   //  return this.csvRecords;
+//   return of(this.csvRecords);
+// }
