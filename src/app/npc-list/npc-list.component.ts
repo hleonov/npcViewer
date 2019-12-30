@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { CSVRecord } from '../CSVRecord';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
-import {Observable, of, from} from "rxjs";
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {Observable, from} from "rxjs";
 @Component({
   selector: 'app-npc-list',
   templateUrl: './npc-list.component.html',
@@ -11,16 +12,16 @@ import {Observable, of, from} from "rxjs";
 })
 
 export class NpcListComponent implements OnInit {
-  //var dataArr: CSVRecord[] = [];
   private loading: boolean = false;
   public csvRecords: CSVRecord[] = [];
   dataSource;
   headers: any[] = [];
   columnsToDisplay = ['firstName', 'lastName', 'gender', 'race', 'nationality','class', 'looks', 'role', 'context', 'source'];
-  displayedColumns: string[] = ['firstName', 'lastName', 'gender', 'race', 'nationality',
-  'class', 'looks', 'role', 'context', 'source'];
   @ViewChild(MatSort, {static: true}) sort: MatSort;
-  //  http: HttpClient;
+
+  globalFilter = '';
+  nameFilter = new FormControl();
+  filteredValues = {lastName: '', firstName: ''};
   // GET CSV FILE HEADER COLUMNS
   getHeaderArray(csvRecordsArr: any)
   {
@@ -85,6 +86,7 @@ export class NpcListComponent implements OnInit {
     await this.loadData().then(()=> {
       this.dataSource = new MatTableDataSource<CSVRecord>(this.csvRecords);
       this.dataSource.sort = this.sort;
+      this.dataSource.filterPredicate = this.myCustomFilter();
       console.log("+++++++++++++++++++++ finished loadData with: "+this.csvRecords.length)
     });
   }
@@ -99,22 +101,30 @@ export class NpcListComponent implements OnInit {
 
   ngOnInit() {
     //console.log("in ngOnInit");
+     this.nameFilter.valueChanges.subscribe((nameFilterValue) => {
+        this.filteredValues['firstName'] = nameFilterValue.trim().toLowerCase();
+      //  this.filteredValues['name'] =  nameFilterValue.trim().toLowerCase();
+        this.dataSource.filter = JSON.stringify(this.filteredValues);
+      });
+  }
+
+  myCustomFilter() {
+      const myFilterPredicate = (data, filter: string): boolean => {
+      var globalMatch = !this.globalFilter;
+
+      if (this.globalFilter) { // search all text fields
+        return (JSON.stringify(data).toString().trim().toLowerCase().indexOf(this.globalFilter.trim().toLowerCase()) !== -1);
+      }
+
+      //not global filter
+      let searchString = JSON.parse(filter);
+      return data.firstName.toString().trim().toLowerCase().includes(searchString.firstName);
+             //data.name.toString().trim().toLowerCase().indexOf(searchString.name.toLowerCase()) !== -1;
+      };
+      return myFilterPredicate;
+  }
+  applyFilter(filterValue: string) {
+    this.globalFilter = filterValue.trim().toLowerCase(); //flag this for computing the filterPredicate
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
-// loadData() {//: Observable<CSVRecord[]>{
-//   //let input = $event.target;
-//   let inputFile = "assets/fake_NPC_list.csv";
-//   //subscribe to the result of http.get (the entire csv file), process the data
-//   //and in the end assign to a class property to be available to the template
-//   this.http.get(inputFile, {responseType: 'text'})
-//   .subscribe(csvData => {
-//     let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
-//     let headersRow = this.getHeaderArray(csvRecordsArray);
-//     console.log("headers: " + headersRow);
-//     this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
-//     console.log("no. of items: " + this.csvRecords.length);
-//     this.headers = headersRow;
-//   });
-//   //  return this.csvRecords;
-//   return of(this.csvRecords);
-// }
