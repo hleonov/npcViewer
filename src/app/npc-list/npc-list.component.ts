@@ -20,7 +20,9 @@ export class NpcListComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   globalFilter = '';
-  nameFilter = new FormControl();
+  firstNameFilter = new FormControl();
+  lastNameFilter = new FormControl();
+
   filteredValues = {lastName: '', firstName: ''};
   // GET CSV FILE HEADER COLUMNS
   getHeaderArray(csvRecordsArr: any)
@@ -101,11 +103,14 @@ export class NpcListComponent implements OnInit {
 
   ngOnInit() {
     //console.log("in ngOnInit");
-     this.nameFilter.valueChanges.subscribe((nameFilterValue) => {
+     this.firstNameFilter.valueChanges.subscribe((nameFilterValue) => {
         this.filteredValues['firstName'] = nameFilterValue.trim().toLowerCase();
-      //  this.filteredValues['name'] =  nameFilterValue.trim().toLowerCase();
-        this.dataSource.filter = JSON.stringify(this.filteredValues);
-      });
+        this.dataSource.filter = JSON.stringify(this.filteredValues); //  this.filteredValues['name'] =  nameFilterValue.trim().toLowerCase();
+     });
+     this.lastNameFilter.valueChanges.subscribe((nameFilterValue) => {
+         this.filteredValues['lastName'] = nameFilterValue.trim().toLowerCase();
+         this.dataSource.filter = JSON.stringify(this.filteredValues); 
+     });
   }
 
   myCustomFilter() {
@@ -118,7 +123,8 @@ export class NpcListComponent implements OnInit {
 
       //not global filter
       let searchString = JSON.parse(filter);
-      return data.firstName.toString().trim().toLowerCase().includes(searchString.firstName);
+      return data.firstName.toString().trim().toLowerCase().includes(searchString.firstName) &&
+             data.lastName.toString().trim().toLowerCase().includes(searchString.lastName);
              //data.name.toString().trim().toLowerCase().indexOf(searchString.name.toLowerCase()) !== -1;
       };
       return myFilterPredicate;
