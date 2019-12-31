@@ -10,59 +10,115 @@
 
 <div class="csv-result-table" >
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-
+    <!-- first name column  -->
     <ng-container matColumnDef="firstName">
       <th mat-header-cell *matHeaderCellDef >
         <div mat-sort-header>First Name</div>
         <div><mat-form-field>
-          <input matInput class="form-field" [formControl]="firstNameFilter" placeholder="First Name ...">
+          <input matInput class="form-field" [formControl]="specificFilters['firstNameFilter']" placeholder="First Name ...">
         </mat-form-field></div>
       </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.firstName}} </td>
     </ng-container>
 
+    <!-- last name column  -->
     <ng-container matColumnDef="lastName">
       <th mat-header-cell *matHeaderCellDef>
         <div mat-sort-header>Last Name</div>
         <div><mat-form-field>
-          <input matInput class="form-field" [formControl]="lastNameFilter" placeholder="Last Name ...">
+          <input matInput class="form-field" [formControl]="specificFilters['lastNameFilter']" placeholder="Last Name ...">
         </mat-form-field></div>
      </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.lastName}} </td>
     </ng-container>
 
+    <!-- gender column  -->
     <ng-container matColumnDef="gender">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Gender </th>
+      <th mat-header-cell *matHeaderCellDef>
+        <div mat-sort-header>Gender</div>
+        <div><mat-form-field>
+          <input matInput class="form-field" [formControl]="specificFilters['genderFilter']" placeholder="Gender ...">
+        </mat-form-field></div>
+      </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.gender}} </td>
     </ng-container>
+
+    <!-- race column  -->
     <ng-container matColumnDef="race">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Race </th>
+      <th mat-header-cell *matHeaderCellDef>
+        <div mat-sort-header>Race</div>
+        <div><mat-form-field>
+          <input matInput class="form-field" [formControl]="specificFilters['raceFilter']" placeholder="Race ...">
+        </mat-form-field></div>
+       </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.race}} </td>
     </ng-container>
+
+    <!-- nationality column  -->
     <ng-container matColumnDef="nationality">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nationality </th>
+      <th mat-header-cell *matHeaderCellDef>
+        <div mat-sort-header>Nationality</div>
+        <div><mat-form-field>
+          <input matInput class="form-field" [formControl]="specificFilters['nationalityFilter']" placeholder="Nationality ...">
+        </mat-form-field></div>
+      </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.nationality}} </td>
     </ng-container>
+
+    <!-- class column  -->
     <ng-container matColumnDef="class">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Class </th>
+      <th mat-header-cell *matHeaderCellDef>
+        <div mat-sort-header>Class</div>
+        <div><mat-form-field>
+          <input matInput class="form-field" [formControl]="specificFilters['classFilter']" placeholder="Class ...">
+        </mat-form-field></div>
+      </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.class}} </td>
     </ng-container>
+
+    <!-- looks column  -->
     <ng-container matColumnDef="looks">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Looks </th>
+      <th mat-header-cell *matHeaderCellDef>
+        <div mat-sort-header>Looks</div>
+        <div><mat-form-field>
+          <input matInput class="form-field" [formControl]="specificFilters['looksFilter']" placeholder="Looks ...">
+        </mat-form-field></div>
+      </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.looks}} </td>
     </ng-container>
+
+    <!-- role column  -->
     <ng-container matColumnDef="role">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
+      <th mat-header-cell *matHeaderCellDef>
+        <div mat-sort-header>Role</div>
+        <div><mat-form-field>
+          <input matInput class="form-field" [formControl]="specificFilters['roleFilter']" placeholder="Role ...">
+        </mat-form-field></div>
+      </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.role}} </td>
     </ng-container>
+
+    <!-- context column  -->
     <ng-container matColumnDef="context">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Context </th>
+      <th mat-header-cell *matHeaderCellDef>
+        <div mat-sort-header>Context</div>
+        <div><mat-form-field>
+          <input matInput class="form-field" [formControl]="specificFilters['contextFilter']" placeholder="Context ...">
+        </mat-form-field></div>
+      </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.context}} </td>
     </ng-container>
+    <!-- source column  -->
     <ng-container matColumnDef="source">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Source </th>
+      <th mat-header-cell *matHeaderCellDef>
+        <div mat-sort-header>Source</div>
+        <div><mat-form-field>
+          <input matInput class="form-field" [formControl]="specificFilters['sourceFilter']" placeholder="Source ...">
+        </mat-form-field></div>
+      </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.source}} </td>
     </ng-container>
+    
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
   </table>

@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CSVRecord } from '../CSVRecord';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {Observable, from} from "rxjs";
+
+import { CSVRecord } from '../CSVRecord';
+
 @Component({
   selector: 'app-npc-list',
   templateUrl: './npc-list.component.html',
@@ -20,10 +22,60 @@ export class NpcListComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   globalFilter = '';
-  firstNameFilter = new FormControl();
-  lastNameFilter = new FormControl();
+  specificFilters = {};
+  filteredValues = {};
 
-  filteredValues = {lastName: '', firstName: ''};
+  constructor(private http: HttpClient) {
+    for (let col of this.columnsToDisplay) {
+      this.filteredValues[col] = '';
+      this.specificFilters[col+"Filter"] = new FormControl();
+    }
+    this.loading = true;
+    this.setDataSource().then(() => {
+      this.loading = false;
+    });
+  }
+
+  ngOnInit() {
+    //console.log("in ngOnInit");
+    //subscribe to specific filters
+    for (let col of this.columnsToDisplay) {
+      this.specificFilters[col+"Filter"].valueChanges.subscribe((filterValue) => {
+         this.filteredValues[col] = filterValue.trim().toLowerCase();
+         this.dataSource.filter = JSON.stringify(this.filteredValues); //  this.filteredValues['name'] =  nameFilterValue.trim().toLowerCase();
+      });
+    }
+  }
+
+  myCustomFilter() {
+      const myFilterPredicate = (data, filter: string): boolean => {
+      var globalMatch = !this.globalFilter;
+
+      if (this.globalFilter) { // search all text fields
+        return (JSON.stringify(data).toString().trim().toLowerCase().includes(this.globalFilter.trim().toLowerCase()));
+      }
+
+      //not global filter
+      let searchString = JSON.parse(filter);
+      return data.firstName.toString().trim().toLowerCase().includes(searchString.firstName) &&
+             data.lastName.toString().trim().toLowerCase().includes(searchString.lastName) &&
+             data.gender.toString().trim().toLowerCase().includes(searchString.gender) &&
+             data.race.toString().trim().toLowerCase().includes(searchString.race) &&
+             data.nationality.toString().trim().toLowerCase().includes(searchString.nationality) &&
+             data.class.toString().trim().toLowerCase().includes(searchString.class) &&
+             data.looks.toString().trim().toLowerCase().includes(searchString.looks) &&
+             data.role.toString().trim().toLowerCase().includes(searchString.role) &&
+             data.context.toString().trim().toLowerCase().includes(searchString.context) &&
+             data.source.toString().trim().toLowerCase().includes(searchString.source);
+             //data.name.toString().trim().toLowerCase().indexOf(searchString.name.toLowerCase()) !== -1;
+      };
+      return myFilterPredicate;
+  }
+  applyFilter(filterValue: string) {
+    this.globalFilter = filterValue.trim().toLowerCase(); //flag this for computing the filterPredicate
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   // GET CSV FILE HEADER COLUMNS
   getHeaderArray(csvRecordsArr: any)
   {
@@ -88,49 +140,8 @@ export class NpcListComponent implements OnInit {
     await this.loadData().then(()=> {
       this.dataSource = new MatTableDataSource<CSVRecord>(this.csvRecords);
       this.dataSource.sort = this.sort;
-      this.dataSource.filterPredicate = this.myCustomFilter();
+      this.dataSource.filterPredicate = this.myCustomFilter(); //this.myfilters.separateFilter();//
       console.log("+++++++++++++++++++++ finished loadData with: "+this.csvRecords.length)
     });
-  }
-
-  constructor(private http: HttpClient) {
-    //console.log("in constructor");
-    this.loading = true;
-    this.setDataSource().then(() => {
-      this.loading = false;
-    });
-  }
-
-  ngOnInit() {
-    //console.log("in ngOnInit");
-     this.firstNameFilter.valueChanges.subscribe((nameFilterValue) => {
-        this.filteredValues['firstName'] = nameFilterValue.trim().toLowerCase();
-        this.dataSource.filter = JSON.stringify(this.filteredValues); //  this.filteredValues['name'] =  nameFilterValue.trim().toLowerCase();
-     });
-     this.lastNameFilter.valueChanges.subscribe((nameFilterValue) => {
-         this.filteredValues['lastName'] = nameFilterValue.trim().toLowerCase();
-         this.dataSource.filter = JSON.stringify(this.filteredValues); 
-     });
-  }
-
-  myCustomFilter() {
-      const myFilterPredicate = (data, filter: string): boolean => {
-      var globalMatch = !this.globalFilter;
-
-      if (this.globalFilter) { // search all text fields
-        return (JSON.stringify(data).toString().trim().toLowerCase().indexOf(this.globalFilter.trim().toLowerCase()) !== -1);
-      }
-
-      //not global filter
-      let searchString = JSON.parse(filter);
-      return data.firstName.toString().trim().toLowerCase().includes(searchString.firstName) &&
-             data.lastName.toString().trim().toLowerCase().includes(searchString.lastName);
-             //data.name.toString().trim().toLowerCase().indexOf(searchString.name.toLowerCase()) !== -1;
-      };
-      return myFilterPredicate;
-  }
-  applyFilter(filterValue: string) {
-    this.globalFilter = filterValue.trim().toLowerCase(); //flag this for computing the filterPredicate
-    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
