@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, NgModel } from '@angular/forms';
 import {Observable, from} from "rxjs";
 
 import { CSVRecord } from '../CSVRecord';
@@ -16,6 +16,7 @@ import { CSVRecord } from '../CSVRecord';
 export class NpcListComponent implements OnInit {
   private loading: boolean = false;
   public csvRecords: CSVRecord[] = [];
+  clearLabel: string = "Clear all filters";
   dataSource;
   headers: any[] = [];
   columnsToDisplay = ['firstName', 'lastName', 'gender', 'race', 'nationality','class', 'looks', 'role', 'context', 'source'];
@@ -76,6 +77,13 @@ export class NpcListComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  clearFilters(event) {
+      this.globalFilter='';
+      for (let col of this.columnsToDisplay) {
+        this.specificFilters[col+"Filter"].setValue('');
+      }
+      this.dataSource.filter = '';
+  }
   // GET CSV FILE HEADER COLUMNS
   getHeaderArray(csvRecordsArr: any)
   {

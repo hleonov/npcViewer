@@ -8,12 +8,14 @@ import { NpcListComponent } from './npc-list/npc-list.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule, MatInputModule} from '@angular/material';
+import { ButtonComponent } from './button/button.component';
 @NgModule({
   declarations: [
     AppComponent,
-    NpcListComponent
+    NpcListComponent,
+    ButtonComponent
   ],
   imports: [
     BrowserModule,
@@ -23,6 +25,7 @@ import {MatFormFieldModule, MatInputModule} from '@angular/material';
     MatFormFieldModule,
     MatInputModule,
     MatSortModule,
+    FormsModule,
     ReactiveFormsModule,
     // RouterModule.forRoot([
     //    { path: '', component: NpcListComponent }

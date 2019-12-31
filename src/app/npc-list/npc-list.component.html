@@ -4,10 +4,10 @@
 
 <div class="globalFilter">
   <mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Global Filter">
+    <input matInput [(ngModel)]="globalFilter" #ctrl="ngModel" (keyup)="applyFilter($event.target.value)" placeholder="Global Filter">
   </mat-form-field>
+  <app-button (onClick)="clearFilters($event)" [label]="clearLabel" align="right"></app-button>
 </div>
-
 <div class="csv-result-table" >
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
     <!-- first name column  -->
@@ -15,7 +15,7 @@
       <th mat-header-cell *matHeaderCellDef >
         <div mat-sort-header>First Name</div>
         <div><mat-form-field>
-          <input matInput class="form-field" [formControl]="specificFilters['firstNameFilter']" placeholder="First Name ...">
+          <input matInput  class="form-field" [formControl]="specificFilters['firstNameFilter']" placeholder="First Name ...">
         </mat-form-field></div>
       </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.firstName}} </td>
