@@ -2,7 +2,7 @@
   <p class="lead" *ngIf="loading">Loading...</p>
 </div>
 
-<div class="filter">
+<div class="globalFilter">
   <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Global Filter">
   </mat-form-field>
@@ -118,7 +118,7 @@
       </th>
       <td mat-cell *matCellDef="let csvData"> {{csvData.source}} </td>
     </ng-container>
-    
+
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
   </table>
