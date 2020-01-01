@@ -87,7 +87,7 @@ export class NpcListComponent implements OnInit {
   // GET CSV FILE HEADER COLUMNS
   getHeaderArray(csvRecordsArr: any)
   {
-    let headers = csvRecordsArr[0].split(',');
+    let headers = csvRecordsArr[0].split('\t');
     let headerArray = [];
 
     for (let j = 0; j < headers.length; j++) {
@@ -102,7 +102,7 @@ export class NpcListComponent implements OnInit {
   {
     var dataArr: CSVRecord[] = [];
     for (let i = 1; i < csvRecordsArray.length; i++) {
-      let data = csvRecordsArray[i].split(',');
+      let data = csvRecordsArray[i].split('\t');
       // FOR EACH ROW IN CSV FILE IF THE NUMBER OF COLUMNS
       // ARE SAME AS NUMBER OF HEADER COLUMNS THEN PARSE THE DATA
       if (data.length > 1) {//== headerLength) {
@@ -129,7 +129,7 @@ export class NpcListComponent implements OnInit {
   async loadData() {
     console.log("in loadData");
     //let input = $event.target;
-    let inputFile = "assets/fake_NPC_list.csv";
+    let inputFile = "assets/NPC_list.tsv";
 
     const csvData = await this.http.get(inputFile, {responseType: 'text'}).toPromise();
 
