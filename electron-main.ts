@@ -8,23 +8,41 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     height: 600,
     webPreferences: {
+      devTools: false
     //  preload: path.join(__dirname, "preload.js"),
     },
     width: 800
   });
 
-mainWindow.loadFile(path.join("dist", "index.html"));
+  mainWindow.loadFile(path.join("dist", "index.html"));
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // Close the DevTools.
+  mainWindow.webContents.closeDevTools();
+  mainWindow.webContents.on("devtools-opened", () => { mainWindow.webContents.closeDevTools(); });
+  mainWindow.webContents.setDevToolsWebContents(null);
 
-  // Emitted when the window is closed.
+  mainWindow.on("opened", () => {
+    mainWindow.webContents.closeDevTools();
+    mainWindow.webContents.on("devtools-opened", () => { mainWindow.webContents.closeDevTools(); });
+  });
+
   mainWindow.on("closed", () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  //mainWindow.webContents.openDevTools({mode: 'detach'});
+
+    // Set the devtools position when the parent window has finished loading.
+    mainWindow.webContents.once('did-finish-load', function () {
+      //  var windowBounds = mainWindow.getBounds();
+        mainWindow.webContents.closeDevTools();
+        //devtools.setPosition(windowBounds.x + windowBounds.width, windowBounds.y);
+    });
+
+
 }
 
 // This method will be called when Electron has finished

@@ -10,6 +10,11 @@
     "buildResources": "dist",
     "app": "dist"
   },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -18,7 +23,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "electron": "ng build --base-href ./ && electron .",
-    "electron-tsc": "tsc --lib es2018,dom electron-main.ts && ng build --base-href ./ && electron ."
+    "electron-tsc": "tsc --lib es2018,dom electron-main.ts && ng build --base-href ./ && electron .",
+    "prerelease": "npm run build -- --prod",
+    "release": "electron-builder"
   },
   "private": true,
   "dependencies": {
@@ -47,6 +54,8 @@
     "@types/node": "^8.9.5",
     "codelyzer": "^5.0.0",
     "electron": "^7.1.7",
+    "electron-builder": "^21.2.0",
+    "electron-packager": "^14.1.1",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
