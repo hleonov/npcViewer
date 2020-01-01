@@ -14,7 +14,7 @@ import { CSVRecord } from '../CSVRecord';
 })
 
 export class NpcListComponent implements OnInit {
-  private loading: boolean = false;
+ loading: boolean = false;
   public csvRecords: CSVRecord[] = [];
   clearLabel: string = "Clear all filters";
   dataSource;
