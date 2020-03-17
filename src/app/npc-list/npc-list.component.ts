@@ -4,6 +4,7 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import { FormControl, ReactiveFormsModule, NgModel } from '@angular/forms';
 import {Observable, from} from "rxjs";
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { CSVRecord } from '../CSVRecord';
 
@@ -41,7 +42,10 @@ export class NpcListComponent implements OnInit {
     //console.log("in ngOnInit");
     //subscribe to specific filters
     for (let col of this.columnsToDisplay) {
-      this.specificFilters[col+"Filter"].valueChanges.subscribe((filterValue) => {
+      this.specificFilters[col+"Filter"].valueChanges
+        .pipe(debounceTime(400))
+        .pipe(distinctUntilChanged())
+        .subscribe((filterValue) => {
          this.filteredValues[col] = filterValue.trim().toLowerCase();
          this.dataSource.filter = JSON.stringify(this.filteredValues); //  this.filteredValues['name'] =  nameFilterValue.trim().toLowerCase();
       });
@@ -73,7 +77,7 @@ export class NpcListComponent implements OnInit {
       return myFilterPredicate;
   }
   applyFilter(filterValue: string) {
-    this.globalFilter = filterValue.trim().toLowerCase(); //flag this for computing the filterPredicate
+    this.globalFilter = filterValue.toLowerCase(); //flag this for computing the filterPredicate
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
