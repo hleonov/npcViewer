@@ -1,12 +1,12 @@
 <h1 mat-dialog-title>Random NPCs ({{data.arr.length}}) </h1>
 <mat-dialog-content>
     <ul>
-        <li *ngFor="let npc of data.arr">
-          {{ npc | json }}
-        </li>
+        <div *ngFor="let npc of stringArray">
+          {{ npc }}
+        </div>
       </ul>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-raised-button [mat-dialog-close]="true">Close</button>
-    <button mat-raised-button [mat-dialog-close]="false">Clear</button>
+    <button mat-raised-button [mat-dialog-close]="false">Close</button>
+    <button mat-raised-button [mat-dialog-close]="true">Clear</button>
 </mat-dialog-actions>

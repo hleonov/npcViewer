@@ -108,14 +108,10 @@ export class NpcListComponent implements OnInit {
     }
     const dialogRef = this.dialog.open(RandomSelectionComponent, { data: {arr: this.randArr}});
 
-    //Need to subscribe afterClosed event of MatDialog - can't this be done inside? 
-    dialogRef.afterClosed().subscribe(clickResult => {
-      console.log(clickResult);
-      if (clickResult) {
-        console.log("Closed by user.");
-      }
-      else {
-        console.log("Cleared by user.");
+    //Need to subscribe afterClosed event of MatDialog
+    dialogRef.afterClosed().subscribe(clearResult => {
+      console.log(clearResult);
+      if (clearResult) { //reset random array
         this.randArr = [];
       }
     })
