@@ -19,7 +19,7 @@ export class NpcListComponent implements OnInit {
   public csvRecords: CSVRecord[] = [];
   clearLabel: string = "Clear all filters";
   dataSource;
-  headers: any[] = [];
+  headers: string[] = [];
   columnsToDisplay = ['firstName', 'lastName', 'gender', 'race', 'nationality','class', 'looks', 'role', 'context', 'source'];
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
@@ -30,7 +30,7 @@ export class NpcListComponent implements OnInit {
   constructor(private http: HttpClient) {
     for (let col of this.columnsToDisplay) {
       this.filteredValues[col] = '';
-      this.specificFilters[col+"Filter"] = new FormControl();
+      this.specificFilters[col] = new FormControl();
     }
     this.loading = true;
     this.setDataSource().then(() => {
@@ -42,7 +42,7 @@ export class NpcListComponent implements OnInit {
     //console.log("in ngOnInit");
     //subscribe to specific filters
     for (let col of this.columnsToDisplay) {
-      this.specificFilters[col+"Filter"].valueChanges
+      this.specificFilters[col].valueChanges
         .pipe(debounceTime(400))
         .pipe(distinctUntilChanged())
         .subscribe((filterValue) => {
@@ -84,7 +84,7 @@ export class NpcListComponent implements OnInit {
   clearFilters(event) {
       this.globalFilter='';
       for (let col of this.columnsToDisplay) {
-        this.specificFilters[col+"Filter"].setValue('');
+        this.specificFilters[col].setValue('');
       }
       this.dataSource.filter = '';
   }
@@ -139,10 +139,11 @@ export class NpcListComponent implements OnInit {
 
     let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
     let headersRow = this.getHeaderArray(csvRecordsArray);
-    console.log("headers: " + headersRow);
+    
     this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
     console.log("no. of items: " + this.csvRecords.length);
     this.headers = headersRow;
+    console.log("headers: " + headersRow);
     return from(this.csvRecords);
     //return this.csvRecords;
   }

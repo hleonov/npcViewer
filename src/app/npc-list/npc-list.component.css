@@ -2,40 +2,50 @@
   margin: 5%;
   width: 25%;
 }
-.csv-result-table {
+/* .csv-result-table {
+  margin: auto;
+   border-collapse: collapse;
+     border: 2px solid #73AD21;
+} */
+
+mat-table {
+  table-layout: fixed;
   margin: 5%;
   border: 2px solid #73AD21;
-
-  /* border-collapse: collapse; */
+  /* display: table; */
 }
+
+mat-table, mat-row, mat-cell {
+  text-align: left;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  color: black;
+  align-items: normal;
+
+}
+mat-cell {
+  border-right: 0.8px solid #ddd;
+  border-left: 0.8px solid #ddd;
+
+}
+.csv-result-table mat-row:nth-child(even){background-color: #f2f2f2;}
+.csv-result-table mat-row:hover {background-color: #ddd;}
+
  .mat-form-field {
   font-size: 14px;
-  width: 70%;
+  width: 70% !important;
+}
+.mat-header-cell {
+  /* flex-direction: column; */
+  /* font-weight: bold; */
+  color: black;
+  background-color: #4CAF50;
+  font-size: 1.2em;
+  border: 0.5px solid #ddd;
 }
 
-.csv-result-table tr:nth-child(even){background-color: #f2f2f2;}
-.csv-result-table tr:hover {background-color: #ddd;}
-
-th.mat-sort-header-sorted {
+.mat-sort-header-sorted {
   color: black;
   font-weight: bold;
-}
-
-th {
-  background-color: #4CAF50;
-  font-weight: normal;
-  font-size: 1em;
-}
-
-table, th, td {
-  border: 0.5px solid #ddd;
-  text-align: left;
-  color: black;
-
-
-}
-
-table {
-  table-layout: fixed;
-  width:100%;
 }
