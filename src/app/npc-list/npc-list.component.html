@@ -2,12 +2,20 @@
   <p class="lead" *ngIf="loading">Loading...</p>
 </div>
 
-<div class="globalFilter">
-  <mat-form-field>
-    <input matInput [(ngModel)]="globalFilter" #ctrl="ngModel" (keyup)="applyFilter($event.target.value)"
-      placeholder="Global Filter">
+<div class="controls">
+  <div class="globalFilter">
+    <mat-form-field>
+      <input matInput [(ngModel)]="globalFilter" #ctrl="ngModel" (keyup)="applyFilter($event.target.value)"
+        placeholder="Global Filter">
+    </mat-form-field>
+  </div>
+  <app-button (onClick)="clearFilters($event)" [label]="'Clear all filters'"></app-button>
+  <app-button (onClick)="random($event.target.value)" [label]="'Get random'"></app-button>
+  <mat-form-field style="padding-left: 20px; width:100px !important">
+    <input matInput type="number" [formControl]="randomNum" placeholder="How many?">
+    <!-- formControlName="value" class="form-control"  name="value" -->
+    <!-- <input matInput [(ngModel)]="randomNum" #ctrl="ngModel"> -->
   </mat-form-field>
-  <app-button (onClick)="clearFilters($event)" [label]="clearLabel" align="right"></app-button>
 </div>
 
 <div class="csv-result-table">

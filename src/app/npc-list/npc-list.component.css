@@ -1,6 +1,9 @@
 .globalFilter {
+  width: 15%;
+}
+.controls {
   margin: 5%;
-  width: 25%;
+  display: flex;
 }
 /* .csv-result-table {
   margin: auto;
@@ -30,7 +33,7 @@ mat-table, mat-row, mat-cell {
 
  .mat-form-field {
   font-size: 14px;
-  width: 70% !important;
+  width: 90% !important;
 }
 .mat-header-cell {
   /* flex-direction: column; */

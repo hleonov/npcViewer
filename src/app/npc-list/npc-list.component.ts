@@ -17,7 +17,6 @@ import { CSVRecord } from '../CSVRecord';
 export class NpcListComponent implements OnInit {
  loading: boolean = false;
   public csvRecords: CSVRecord[] = [];
-  clearLabel: string = "Clear all filters";
   dataSource;
   headers: string[] = [];
   columnsToDisplay = ['firstName', 'lastName', 'gender', 'race', 'nationality','class', 'looks', 'role', 'context', 'source'];
@@ -26,8 +25,9 @@ export class NpcListComponent implements OnInit {
   globalFilter = '';
   specificFilters = {};
   filteredValues = {};
-
+  randomNum: FormControl;
   constructor(private http: HttpClient) {
+    this.randomNum = new FormControl();
     for (let col of this.columnsToDisplay) {
       this.filteredValues[col] = '';
       this.specificFilters[col] = new FormControl();
@@ -87,6 +87,18 @@ export class NpcListComponent implements OnInit {
         this.specificFilters[col].setValue('');
       }
       this.dataSource.filter = '';
+  }
+
+  random() {
+    console.log("number to randomize: " + this.randomNum.value);
+    console.log("size of datasource: " + this.dataSource.filteredData.length);
+    const arrLength = this.dataSource.filteredData.length;
+    if (this.randomNum.value != null) {
+      for (let i=0; i<this.randomNum.value; i++) {
+        var randomItem = this.dataSource.filteredData[Math.floor(Math.random() * arrLength)];
+        console.log(randomItem);
+      }
+    }
   }
   // GET CSV FILE HEADER COLUMNS
   getHeaderArray(csvRecordsArr: any)
