@@ -11,7 +11,7 @@
 mat-table {
   table-layout: fixed;
   margin: 5%;
-  border: 2px solid #73AD21;
+  border: 2px solid rgba(13, 17, 245, 0.699);
   /* display: table; */
 }
 
@@ -40,7 +40,7 @@ mat-cell {
   /* flex-direction: column; */
   /* font-weight: bold; */
   color: black;
-  background-color: #4CAF50;
+  background-color: rgba(63, 139, 238, 0.644);
   font-size: 1.2em;
   border: 0.5px solid #ddd;
 }
