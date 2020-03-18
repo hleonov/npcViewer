@@ -1,12 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import {MatSort} from '@angular/material/sort';
-import { FormControl, ReactiveFormsModule, NgModel } from '@angular/forms';
-import {Observable, from} from "rxjs";
+
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material';
+
+import { FormControl } from '@angular/forms';
+import { Observable, from } from "rxjs";
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { CSVRecord } from '../CSVRecord';
+import { RandomSelectionComponent } from '../random-selection/random-selection.component';
 
 @Component({
   selector: 'app-npc-list',
@@ -15,18 +19,20 @@ import { CSVRecord } from '../CSVRecord';
 })
 
 export class NpcListComponent implements OnInit {
- loading: boolean = false;
+  loading: boolean = false;
   public csvRecords: CSVRecord[] = [];
   dataSource;
+  randArr: any[] = [];
+
   headers: string[] = [];
-  columnsToDisplay = ['firstName', 'lastName', 'gender', 'race', 'nationality','class', 'looks', 'role', 'context', 'source'];
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  columnsToDisplay = ['firstName', 'lastName', 'gender', 'race', 'nationality', 'class', 'looks', 'role', 'context', 'source'];
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   globalFilter = '';
   specificFilters = {};
   filteredValues = {};
   randomNum: FormControl;
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private dialog: MatDialog) {
     this.randomNum = new FormControl();
     for (let col of this.columnsToDisplay) {
       this.filteredValues[col] = '';
@@ -46,14 +52,14 @@ export class NpcListComponent implements OnInit {
         .pipe(debounceTime(400))
         .pipe(distinctUntilChanged())
         .subscribe((filterValue) => {
-         this.filteredValues[col] = filterValue.trim().toLowerCase();
-         this.dataSource.filter = JSON.stringify(this.filteredValues); //  this.filteredValues['name'] =  nameFilterValue.trim().toLowerCase();
-      });
+          this.filteredValues[col] = filterValue.trim().toLowerCase();
+          this.dataSource.filter = JSON.stringify(this.filteredValues); //  this.filteredValues['name'] =  nameFilterValue.trim().toLowerCase();
+        });
     }
   }
 
   myCustomFilter() {
-      const myFilterPredicate = (data, filter: string): boolean => {
+    const myFilterPredicate = (data, filter: string): boolean => {
       var globalMatch = !this.globalFilter;
 
       if (this.globalFilter) { // search all text fields
@@ -63,18 +69,18 @@ export class NpcListComponent implements OnInit {
       //not global filter
       let searchString = JSON.parse(filter);
       return data.firstName.toString().trim().toLowerCase().includes(searchString.firstName) &&
-             data.lastName.toString().trim().toLowerCase().includes(searchString.lastName) &&
-             data.gender.toString().trim().toLowerCase().includes(searchString.gender) &&
-             data.race.toString().trim().toLowerCase().includes(searchString.race) &&
-             data.nationality.toString().trim().toLowerCase().includes(searchString.nationality) &&
-             data.class.toString().trim().toLowerCase().includes(searchString.class) &&
-             data.looks.toString().trim().toLowerCase().includes(searchString.looks) &&
-             data.role.toString().trim().toLowerCase().includes(searchString.role) &&
-             data.context.toString().trim().toLowerCase().includes(searchString.context) &&
-             data.source.toString().trim().toLowerCase().includes(searchString.source);
-             //data.name.toString().trim().toLowerCase().indexOf(searchString.name.toLowerCase()) !== -1;
-      };
-      return myFilterPredicate;
+        data.lastName.toString().trim().toLowerCase().includes(searchString.lastName) &&
+        data.gender.toString().trim().toLowerCase().includes(searchString.gender) &&
+        data.race.toString().trim().toLowerCase().includes(searchString.race) &&
+        data.nationality.toString().trim().toLowerCase().includes(searchString.nationality) &&
+        data.class.toString().trim().toLowerCase().includes(searchString.class) &&
+        data.looks.toString().trim().toLowerCase().includes(searchString.looks) &&
+        data.role.toString().trim().toLowerCase().includes(searchString.role) &&
+        data.context.toString().trim().toLowerCase().includes(searchString.context) &&
+        data.source.toString().trim().toLowerCase().includes(searchString.source);
+      //data.name.toString().trim().toLowerCase().indexOf(searchString.name.toLowerCase()) !== -1;
+    };
+    return myFilterPredicate;
   }
   applyFilter(filterValue: string) {
     this.globalFilter = filterValue.toLowerCase(); //flag this for computing the filterPredicate
@@ -82,27 +88,40 @@ export class NpcListComponent implements OnInit {
   }
 
   clearFilters(event) {
-      this.globalFilter='';
-      for (let col of this.columnsToDisplay) {
-        this.specificFilters[col].setValue('');
-      }
-      this.dataSource.filter = '';
+    this.globalFilter = '';
+    for (let col of this.columnsToDisplay) {
+      this.specificFilters[col].setValue('');
+    }
+    this.dataSource.filter = '';
   }
 
   random() {
     console.log("number to randomize: " + this.randomNum.value);
-    console.log("size of datasource: " + this.dataSource.filteredData.length);
+    console.log("size of data source: " + this.dataSource.filteredData.length);
     const arrLength = this.dataSource.filteredData.length;
     if (this.randomNum.value != null) {
-      for (let i=0; i<this.randomNum.value; i++) {
+      for (let i = 0; i < this.randomNum.value; i++) {
         var randomItem = this.dataSource.filteredData[Math.floor(Math.random() * arrLength)];
+        this.randArr.push(randomItem);
         console.log(randomItem);
       }
     }
+    const dialogRef = this.dialog.open(RandomSelectionComponent, { data: {arr: this.randArr}});
+
+    //Need to subscribe afterClosed event of MatDialog - can't this be done inside? 
+    dialogRef.afterClosed().subscribe(clickResult => {
+      console.log(clickResult);
+      if (clickResult) {
+        console.log("Closed by user.");
+      }
+      else {
+        console.log("Cleared by user.");
+        this.randArr = [];
+      }
+    })
   }
   // GET CSV FILE HEADER COLUMNS
-  getHeaderArray(csvRecordsArr: any)
-  {
+  getHeaderArray(csvRecordsArr: any) {
     let headers = csvRecordsArr[0].split('\t');
     let headerArray = [];
 
@@ -114,8 +133,7 @@ export class NpcListComponent implements OnInit {
     return headerArray;
   }
 
-  getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any)
-  {
+  getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {
     var dataArr: CSVRecord[] = [];
     for (let i = 1; i < csvRecordsArray.length; i++) {
       let data = csvRecordsArray[i].split('\t');
@@ -147,11 +165,11 @@ export class NpcListComponent implements OnInit {
     //let input = $event.target;
     let inputFile = "assets/NPC_list.tsv";
 
-    const csvData = await this.http.get(inputFile, {responseType: 'text'}).toPromise();
+    const csvData = await this.http.get(inputFile, { responseType: 'text' }).toPromise();
 
     let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
     let headersRow = this.getHeaderArray(csvRecordsArray);
-    
+
     this.csvRecords = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
     console.log("no. of items: " + this.csvRecords.length);
     this.headers = headersRow;
@@ -162,11 +180,11 @@ export class NpcListComponent implements OnInit {
 
   async setDataSource() {
     //console.log("in setDataSource: "+this.csvRecords.length);
-    await this.loadData().then(()=> {
+    await this.loadData().then(() => {
       this.dataSource = new MatTableDataSource<CSVRecord>(this.csvRecords);
       this.dataSource.sort = this.sort;
       this.dataSource.filterPredicate = this.myCustomFilter(); //this.myfilters.separateFilter();//
-      console.log("+++++++++++++++++++++ finished loadData with: "+this.csvRecords.length)
+      console.log("+++++++++++++++++++++ finished loadData with: " + this.csvRecords.length)
     });
   }
 }
