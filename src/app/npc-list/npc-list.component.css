@@ -21,14 +21,10 @@ mat-table, mat-row, mat-cell {
   word-break: break-word;
   hyphens: auto;
   color: black;
-  align-items: normal;
-
+  align-items: normal;  
+  border: 0.8px solid #ddd;
 }
-mat-cell {
-  border-right: 0.8px solid #ddd;
-  border-left: 0.8px solid #ddd;
 
-}
 .csv-result-table mat-row:nth-child(even){background-color: #f2f2f2;}
 .csv-result-table mat-row:hover {background-color: #ddd;}
 

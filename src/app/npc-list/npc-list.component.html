@@ -4,30 +4,28 @@
 
 <div class="globalFilter">
   <mat-form-field>
-    <input matInput [(ngModel)]="globalFilter" #ctrl="ngModel" (keyup)="applyFilter($event.target.value)" placeholder="Global Filter">
+    <input matInput [(ngModel)]="globalFilter" #ctrl="ngModel" (keyup)="applyFilter($event.target.value)"
+      placeholder="Global Filter">
   </mat-form-field>
   <app-button (onClick)="clearFilters($event)" [label]="clearLabel" align="right"></app-button>
 </div>
 
-<div class="csv-result-table" >
+<div class="csv-result-table">
   <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
-    <ng-container *ngFor = "let col of columnsToDisplay; let i = index" [matColumnDef]="col">
+    <ng-container *ngFor="let col of columnsToDisplay; let i = index" [matColumnDef]="col">
       <mat-header-cell *matHeaderCellDef>
         <div>
-          <div mat-sort-header class="col-title" >{{headers[i+1]}}</div>
+          <div mat-sort-header class="col-title">{{headers[i+1]}}</div>
           <div>
             <mat-form-field>
-             <input matInput class="mat-form-field"
-             [formControl]="specificFilters[col]" 
-             placeholder="Search for ...">
-           </mat-form-field>
-         </div>
+              <input matInput class="mat-form-field" [formControl]="specificFilters[col]" placeholder="Search for ...">
+            </mat-form-field>
+          </div>
         </div>
-        
-        </mat-header-cell>
+      </mat-header-cell>
       <mat-cell *matCellDef="let csvData"> {{csvData[col]}} </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: columnsToDisplay;"></mat-row> 
+    <mat-row *matRowDef="let row; columns: columnsToDisplay;"></mat-row>
   </mat-table>
 </div>
